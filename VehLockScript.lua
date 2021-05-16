@@ -1,14 +1,14 @@
 --[[
     File Name:		VehLockScript.lua
 	Programmer:		Mickaël Papineau
-	Date:			2021/04/08
-	Version:		1.4.0
+	Date:			2021/04/29
+	Version:		1.4.1
 	Description:    This script is to lock vehicles by using two commands.
 ]]--
 
 --Config variables [Can Be Modified]
-local Lockpick = true   --Enable/disable the /lockpick feature.
-local Winsmash = true   --Enable/disable the /winsmash feature.
+local Lockpick = true  --Enable/disable the /lockpick feature.
+local Winbreak = true  --Enable/disable the /winbreak feature.
 
 --Variables [Do Not Modify]
 local OwnVehID    --The ID of the vehicle that was locked.
@@ -54,7 +54,7 @@ end, false)
 if (Lockpick == true) then
 
     TriggerEvent("chat:addSuggestion", "/lockpick", "Lockpick the vehicle in front of you.") --Chat suggestion for the /lockpick command.
-    RegisterCommand("lockpick", function () --The /lockpick command function.
+    RegisterCommand("lockpick", function() --The /lockpick command function.
 
         local distanceToCheck = 1.0 --The distance to check in front of the player for a vehicle.
         local ped = GetPlayerPed(PlayerId())    --Gets the player ped.
@@ -100,12 +100,16 @@ if (Lockpick == true) then
 
     end, false)
 
+else
+
+    TriggerEvent("chat:removeSuggestion", "/lockpick")
+
 end
 
-if (Winsmash == true) then
+if (Winbreak == true) then
 
-    TriggerEvent("chat:addSuggestion", "/winsmash", "Break the window of the vehicle in front of you.") --Chat suggestion for the /winsmash command.
-    RegisterCommand("winsmash", function ()
+    TriggerEvent("chat:addSuggestion", "/winbreak", "Break the window of the vehicle in front of you.") --Chat suggestion for the /winbreak command.
+    RegisterCommand("winbreak", function()
 
         local distanceToCheck = 1.0 --The distance to check in front of the player for a vehicle.
         local ped = GetPlayerPed(PlayerId())    --Gets the player ped.
@@ -134,11 +138,15 @@ if (Winsmash == true) then
 
     end, false)
 
+else
+
+    TriggerEvent("chat:removeSuggestion", "/winbreak")
+
 end
 
 RegisterCommand("VehLockScriptVer", function()  --The /VehLockScriptVer command function.
 
-    notify("~y~VehLockScript V1.4.0")   --Notifies the player of the script's version.
+    notify("~y~VehLockScript V1.4.1")   --Notifies the player of the script's version.
 
 end, false)
 
