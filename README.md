@@ -26,3 +26,6 @@ VehLockScript is a script that locks vehicles by using two commands used for the
 
 ### V1.1.0
 * Rewrite of the script to include the OwnVehID & OwnVehLock variables.
+
+# Dependencies and sources
+* [wk_delveh](https://forum.cfx.re/t/release-delete-vehicle-script-v1-1-0-updated-2020/7727) by WolfKnight
