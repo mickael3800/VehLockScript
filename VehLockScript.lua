@@ -2,7 +2,7 @@
     File Name:		VehLockScript.lua
 	Programmer:		Mickaël Papineau
 	Date:			2021/04/29
-	Version:		1.4.1
+	Version:		1.4.2
 	Description:    This script is to lock vehicles by using two commands.
 ]]--
 
@@ -21,7 +21,7 @@ RegisterCommand("lock", function()  --The /lock command function.
 
         SetVehicleDoorsLocked(GetLastDrivenVehicle(), 2)    --Locks the vehicle.
         SetVehicleAlarm(GetLastDrivenVehicle(), true)   --Turns on the vehicles alarm.
-        OwnVehID = GetLastDrivenVehicle()   --Sets the OwnVehID to the locked vehicle's ID.
+        OwnVehID = NetworkGetNetworkIdFromEntity(GetLastDrivenVehicle())   --Sets the OwnVehID to the locked vehicle's ID.
         OwnVehLock = true   --Sets the OwnVehLock to true.
         notify("~g~Your vehicle is now locked") --Notifies the player of the commands success status.
 
@@ -38,8 +38,8 @@ RegisterCommand("unlock", function()    --The /unlock command function.
 
     if (OwnVehLock == true) then    --If there's a locked vehicle by the player.
 
-        SetVehicleDoorsLocked(OwnVehID, 1)    --Unlocks the vehicle.
-        SetVehicleAlarm(OwnVehID, false)    --Turns off the vehicles alarm.
+        SetVehicleDoorsLocked(NetworkGetEntityFromNetworkId(OwnVehID), 1)    --Unlocks the vehicle.
+        SetVehicleAlarm(NetworkGetEntityFromNetworkId(OwnVehID), false)    --Turns off the vehicles alarm.
         OwnVehLock = false  --Sets the OwnVehLock to false.
         notify("~r~Your vehicle is now unlocked")   --Notifies the player of the commands success status.
 
@@ -146,7 +146,7 @@ end
 
 RegisterCommand("VehLockScriptVer", function()  --The /VehLockScriptVer command function.
 
-    notify("~y~VehLockScript V1.4.1")   --Notifies the player of the script's version.
+    notify("~y~VehLockScript V1.4.2")   --Notifies the player of the script's version.
 
 end, false)
 
