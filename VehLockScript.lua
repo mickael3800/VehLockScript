@@ -2,21 +2,19 @@
     File Name:		VehLockScript.lua
 	Programmer:		Mickaël Papineau
 	Date:			2021/04/08
-	Version:		1.3.0
+	Version:		1.4.0
 	Description:    This script is to lock vehicles by using two commands.
 ]]--
 
 --Config variables [Can Be Modified]
---[[Wow, Such emptyness]]--
+local Lockpick = true   --Enable/disable the /lockpick feature.
+local Winsmash = true   --Enable/disable the /winsmash feature.
 
 --Variables [Do Not Modify]
 local OwnVehID    --The ID of the vehicle that was locked.
 local OwnVehLock = false    --If there is a vehicle that is already locked by the player.
 
 TriggerEvent("chat:addSuggestion", "/lock", "Locks the vehicle that you last driven.") --Chat suggestion for the /lock command.
-TriggerEvent("chat:addSuggestion", "/unlock", "Unlocks the vehicle that you locked.") --Chat suggestion for the /unlock command.
-TriggerEvent("chat:addSuggestion", "/lockpick", "Lockpick the vehicle in front of you.") --Chat suggestion for the /lockpick command.
-
 RegisterCommand("lock", function()  --The /lock command function.
 
     if (OwnVehLock == false) then   --If there's no locked vehicle by the player.
@@ -35,6 +33,7 @@ RegisterCommand("lock", function()  --The /lock command function.
 
 end, false)
 
+TriggerEvent("chat:addSuggestion", "/unlock", "Unlocks the vehicle that you locked.") --Chat suggestion for the /unlock command.
 RegisterCommand("unlock", function()    --The /unlock command function.
 
     if (OwnVehLock == true) then    --If there's a locked vehicle by the player.
@@ -52,55 +51,94 @@ RegisterCommand("unlock", function()    --The /unlock command function.
 
 end, false)
 
-RegisterCommand("lockpick", function () --The /lockpick command function.
+if (Lockpick == true) then
 
-    local distanceToCheck = 5.0 --The distance to check in front of the player for a vehicle.
-    local ped = GetPlayerPed(PlayerId())    --Gets the player ped.
-    local pos = GetEntityCoords(ped)    --Gets the players coords.
-    local inFrontOfPlayer = GetOffsetFromEntityInWorldCoords( ped, 0.0, distanceToCheck, 0.0 )
-    local vehicle = GetVehicleInDirection( ped, pos, inFrontOfPlayer )
+    TriggerEvent("chat:addSuggestion", "/lockpick", "Lockpick the vehicle in front of you.") --Chat suggestion for the /lockpick command.
+    RegisterCommand("lockpick", function () --The /lockpick command function.
 
-    if (DoesEntityExist(vehicle)) then  --Checks if the vehicle exists.
+        local distanceToCheck = 1.0 --The distance to check in front of the player for a vehicle.
+        local ped = GetPlayerPed(PlayerId())    --Gets the player ped.
+        local pos = GetEntityCoords(ped)    --Gets the players coords.
+        local inFrontOfPlayer = GetOffsetFromEntityInWorldCoords(ped, 0.0, distanceToCheck, 0.0)
+        local vehicle = GetVehicleInDirection(ped, pos, inFrontOfPlayer)
 
-        if (GetVehicleDoorLockStatus(vehicle) == 2) then    --Checks if the vehicle is locked.
+        if (DoesEntityExist(vehicle)) then  --Checks if the vehicle exists.
 
-            local almChance = math.random(1, 10)    --Picks a number in between 1 to 10.
+            if (GetVehicleDoorLockStatus(vehicle) == 2) then    --Checks if the vehicle is locked.
 
-            if (almChance == 4) then --10% chance of not set off the alarm.
+                local almChance = math.random(1, 10)    --Picks a number in between 1 to 10.
 
-                SetVehicleDoorsLocked(vehicle, 1)    --Unlocks the vehicle
-                notify("~g~You successfully lockpicked the vehicle without setting off the alarm.") --Notifies the player of there results of lockpicking.
+                if (almChance == 4) then --10% chance of not set off the alarm.
 
-            elseif (almChance == 8) then    --10% chance of being unsuccessful.
+                    SetVehicleDoorsLocked(vehicle, 1)    --Unlocks the vehicle
+                    notify("~g~You successfully lockpicked the vehicle without setting off the alarm.") --Notifies the player of there results of lockpicking.
 
-                StartVehicleAlarm(vehicle)  --Triggers the vehicles alarm.
-                notify("~r~You unsuccessfully lockpicked the vehicle.") --Notifies the player of there results of lockpicking.
+                elseif (almChance == 8) then    --10% chance of being unsuccessful.
 
-            else   --80% chance of set off the alarm.
+                    StartVehicleAlarm(vehicle)  --Triggers the vehicles alarm.
+                    notify("~r~You unsuccessfully lockpicked the vehicle.") --Notifies the player of there results of lockpicking.
 
-                SetVehicleDoorsLocked(vehicle, 1)    --Unlocks the vehicle
-                StartVehicleAlarm(vehicle)  --Triggers the vehicles alarm.
-                notify("~y~You successfully lockpicked the vehicle but you set off the alarm.") --Notifies the player of there results of lockpicking.
+                else   --80% chance of set off the alarm.
+
+                    SetVehicleDoorsLocked(vehicle, 1)    --Unlocks the vehicle
+                    StartVehicleAlarm(vehicle)  --Triggers the vehicles alarm.
+                    notify("~y~You successfully lockpicked the vehicle but you set off the alarm.") --Notifies the player of there results of lockpicking.
+
+                end
+
+            elseif (GetVehicleDoorLockStatus(vehicle) == 1) then    --Checks if the vehicle is unlocked.
+
+                notify("~y~Are you really trying to lockpick an unlocked vehicle.") --Notifies the player that they're lockpicking an unlocked vehicle.
 
             end
 
-        elseif (GetVehicleDoorLockStatus(vehicle) == 1) then    --Checks if the vehicle is unlocked.
+        else
 
-            notify("~y~Are you really trying to lockpick an unlocked vehicle.") --Notifies the player that they're lockpicking an unlocked vehicle.
+            notify("~y~You must be near a vehicle to lockpick it.") --Notifies the player of that they need to be near a vehicle to lockpick.
 
         end
 
-    else
+    end, false)
 
-        notify("~y~You must be near a vehicle to lockpick it.") --Notifies the player of that they need to be near a vehicle to lockpick.
+end
 
-    end
+if (Winsmash == true) then
 
-end, false)
+    TriggerEvent("chat:addSuggestion", "/winsmash", "Break the window of the vehicle in front of you.") --Chat suggestion for the /winsmash command.
+    RegisterCommand("winsmash", function ()
+
+        local distanceToCheck = 1.0 --The distance to check in front of the player for a vehicle.
+        local ped = GetPlayerPed(PlayerId())    --Gets the player ped.
+        local pos = GetEntityCoords(ped)    --Gets the players coords.
+        local inFrontOfPlayer = GetOffsetFromEntityInWorldCoords(ped, 0.0, distanceToCheck, 0.0)
+        local vehicle = GetVehicleInDirection(ped, pos, inFrontOfPlayer)
+
+        if (DoesEntityExist(vehicle)) then  --Checks if the vehicle exists.
+
+            if (GetVehicleDoorLockStatus(vehicle) == 2) then    --Checks if the vehicle is locked.
+
+                SetVehicleDoorsLocked(vehicle, 7)   --Sets the vehicle door lock status so you can break it.
+                TaskEnterVehicle(ped, vehicle, 5000, -1, 2.0, 1, 0)  --Makes you enter the vehicle.
+
+            elseif (GetVehicleDoorLockStatus(vehicle) == 1) then    --Checks if the vehicle is unlocked.
+
+                notify("~y~Are you really trying to break the window of an unlocked vehicle.") --Notifies the player that they're trying to break the window of an unlocked vehicle.
+
+            end
+
+        else
+
+            notify("~y~You must be near a vehicle to break its window.") --Notifies the player of that they need to be near a vehicle to lockpick.
+
+        end
+
+    end, false)
+
+end
 
 RegisterCommand("VehLockScriptVer", function()  --The /VehLockScriptVer command function.
 
-    notify("~y~VehLockScript V1.3.0")   --Notifies the player of the script's version.
+    notify("~y~VehLockScript V1.4.0")   --Notifies the player of the script's version.
 
 end, false)
 
