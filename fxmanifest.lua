@@ -3,6 +3,10 @@ game 'gta5'
 
 author 'Mickaël Papineau'
 description 'Locks vehicle using two commands'
-version '1.4.2'
+version '1.4.3'
 
-client_script 'VehLockScript.lua'
+client_scripts {
+    'client/main.lua',
+    'client/function.lua',
+    'config.lua'
+}

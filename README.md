@@ -1,6 +1,9 @@
 # VehLockScript
-VehLockScript is a script that locks vehicles by using two commands used for the PASRP server.
+VehLockScript is a script that locks vehicles by using two commands.
 # Changelog
+
+### V1.4.3
+* Changes within the script's folder
 
 ### V1.4.2
 * Changed the ID that gets stored in OwnVehID.
@@ -28,4 +31,8 @@ VehLockScript is a script that locks vehicles by using two commands used for the
 * Rewrite of the script to include the OwnVehID & OwnVehLock variables.
 
 # Dependencies and sources
+## Dependencies
+* None
+
+## Sources
 * [wk_delveh](https://forum.cfx.re/t/release-delete-vehicle-script-v1-1-0-updated-2020/7727) by WolfKnight
